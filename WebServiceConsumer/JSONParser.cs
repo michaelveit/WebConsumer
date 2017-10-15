@@ -11,7 +11,6 @@ namespace WebConsumer
 {
     public class JsonObjectParser
     {
-
         
         public JsonObjectParser()
         {
