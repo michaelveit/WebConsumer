@@ -16,14 +16,22 @@ namespace WebConsumer
 {
     public class Consumer
     {
-        public string Consume(string url, string template, IAuthorization auth = null)
+
+    
+        public string Consume(string url, string template, string method = "GET", string postParams = null, IAuthorization auth = null)
         {
             var requestMessage = new HttpRequestMessage()
             {
-                Method = HttpMethod.Get,
+                Method = method?.ToLower() == "post" ? HttpMethod.Post : HttpMethod.Get,
                 RequestUri = new Uri(url),
             };
           
+            if (postParams != null)
+            {
+                requestMessage.Content = new StringContent(postParams, Encoding.UTF8, "application/json");
+                requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            }
+
             if (auth != null)
             {
                 auth.Apply(requestMessage);

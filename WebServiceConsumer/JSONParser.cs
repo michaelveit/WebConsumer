@@ -30,26 +30,31 @@ namespace WebConsumer
             }
 
             var result = new JObject();
-            var jsonObj = JObject.Parse(json);
+            JToken jToken = JToken.Parse(json);
+            
             // parse templates
             var paths = selector.Split(',');
             foreach(var path in paths.Select(x => x.Trim()))
             {
                 if (path.Contains("[*]"))
                 {
-                    //Process array
-                    var values = jsonObj.SelectTokens(path);
+                    var values = jToken.SelectTokens(path);
                     AssertHasValue(values, path);
+
                     var jArray = new JArray();
                     foreach (var jt in values)
                     {
                         jArray.Add(jt);
                     }
-                    result[GetPropertyName(path)] = jArray;
+                    var propName = GetPropertyName(path);
+                    // dealing with a root level array
+                    if (string.IsNullOrEmpty(propName))
+                        propName = "arr";
+                    result[propName] = jArray;
                 }
                 else
                 {
-                    var value = jsonObj.SelectToken(path);
+                    var value = jToken.SelectToken(path);
                     AssertHasValue(value, path);
                     result.Add(GetPropertyName(path), value);
                 }

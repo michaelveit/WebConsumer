@@ -62,6 +62,7 @@ namespace WebConsumer.UnitTests
   }
 }";
 
+
         [Test]
         public void Bad_Path_Throws_Exception()
         {

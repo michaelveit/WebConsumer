@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Dynamic;
 using System.Linq;
 using System.Text;
@@ -51,15 +52,60 @@ namespace WebConsumer.IntegrationTests
             var auth = new AuthorizationHeaderAuth(keys);
             
             var url = "https://us13.api.mailchimp.com/3.0/campaigns/8141a28013";
-            var jsonString = new Consumer().Consume(url, "tracking.opens", auth);
+            var jsonString = new Consumer().Consume(url, "tracking.opens", null, null, auth);
             dynamic result = JsonConvert.DeserializeObject<ExpandoObject>(jsonString);
             bool val = false;
 
             Assert.IsNotNull(result, "result was null");
             Assert.IsNotNull(result.opens, "opens was null.");
             Assert.That(result.opens is Boolean, "opens was not bool");
+        }
+
+        [Test]
+        public void CampaignOne()
+        {
+
+            var parms = new
+            {
+                Username = ConfigurationManager.AppSettings["campaignOneUserName"],
+                Password = ConfigurationManager.AppSettings["campaignOnePassword"],
+                ClientId = Convert.ToInt32(ConfigurationManager.AppSettings["campaignOneClientId"])
+            };
+
+            var postParams = JsonConvert.SerializeObject(parms);
            
+            var url = "https://app.campaign.one/api/Service/GetEmailList";
+            var jsonString = new Consumer().Consume(url, "[*]", "POST", postParams);
+            dynamic result = JsonConvert.DeserializeObject<ExpandoObject>(jsonString);
+          
+            Assert.IsNotNull(result, "result was null");
+            Assert.IsNotNull(result.arr, "result array was null.");
+            Assert.IsNotNull(result.arr[0].Name, "result name was null.");
 
         }
+
+        [Test]
+        public void CampaignOne_2()
+        {
+
+            var parms = new
+            {
+                Username = ConfigurationManager.AppSettings["campaignOneUserName"],
+                Password = ConfigurationManager.AppSettings["campaignOnePassword"],
+                ClientId = Convert.ToInt32(ConfigurationManager.AppSettings["campaignOneClientId"])
+            };
+
+            var postParams = JsonConvert.SerializeObject(parms);
+
+            var url = "https://app.campaign.one/api/Service/GetEmailList";
+            var jsonString = new Consumer().Consume(url, "[*].Name", "POST", postParams);
+            dynamic result = JsonConvert.DeserializeObject<ExpandoObject>(jsonString);
+
+            Assert.IsNotNull(result, "result was null");
+            Assert.IsNotNull(result.Name, "result array was null.");
+            Assert.IsNotNull(result.Name[0], "result name was null.");
+
+        }
+
     }
 }
