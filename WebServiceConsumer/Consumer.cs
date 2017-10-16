@@ -11,13 +11,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using WebConsumer.Auth;
+using WebConsumer.Logging;
 
 namespace WebConsumer
 {
     public class Consumer
     {
-
     
+
         public string Consume(string url, string template, string method = "GET", string postParams = null, IAuthorization auth = null)
         {
             var requestMessage = new HttpRequestMessage()
@@ -37,9 +38,12 @@ namespace WebConsumer
                 auth.Apply(requestMessage);
             }
 
+            Logger.LogRequest(requestMessage.ToString() + " Body: " + requestMessage.Content?.ReadAsStringAsync().Result);
             using (var client = new HttpClient())
             {
                 var response = client.SendAsync(requestMessage).Result;
+                Logger.LogResponse(requestMessage.RequestUri.ToString() + " " + response.ToString());
+
                 var statusCode = response.StatusCode;
                 response.EnsureSuccessStatusCode();
 
