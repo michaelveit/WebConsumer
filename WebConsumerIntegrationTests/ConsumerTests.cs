@@ -107,6 +107,46 @@ namespace WebConsumer.IntegrationTests
 
         }
 
+        [Test]
+        [Ignore("Service is not working")]
+        public void Can_Post_To_CampaignOne()
+        {
+
+            var postParams = @"{
+  'Username': 'urktest2',
+  'Password': 'Password1!',
+  'ClientId': 132,
+  'TemplateID': '1',
+  'Origin': 'string',
+  'Forename': 'string',
+  'Lastname': 'string',
+  'Street': 'string',
+  'Zip': '11111',
+  'City': 'string',
+  'Telephone1': '1234567',
+  'Telephone2': '3456789',
+  'Telephone3': '5671234',
+  'Telephone4': '7890123',
+  'Email': 'name@domin.com',
+  'Country': 'string',
+  'CountryCode': '0045',
+  'CustomerNr': 'string',
+  'Companyname': 'string',
+  'Gender': 'string',
+  'CustomerStatus': 'string',
+  'ExtFields': 'field1=value1;field2=value2;field3=value3'
+}";
+
+            var url = "https://app.campaign.one/api/Service/AddCustomer";
+            var jsonString = new Consumer().Consume(url, "", "POST", postParams);
+            dynamic result = JsonConvert.DeserializeObject<ExpandoObject>(jsonString);
+
+            Assert.IsNotNull(result, "result was null");
+            //Assert.IsNotNull(result.arr, "result array was null.");
+            //Assert.IsNotNull(result.arr[0].Name, "result name was null.");
+
+        }
+
 
         [Test]
         [Ignore("Do not have real credentials")]

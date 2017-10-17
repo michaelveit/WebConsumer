@@ -42,8 +42,7 @@ namespace WebConsumer
             using (var client = new HttpClient())
             {
                 var response = client.SendAsync(requestMessage).Result;
-                Logger.LogResponse(requestMessage.RequestUri.ToString() + " " + response.ToString());
-
+                Logger.LogResponse(requestMessage.RequestUri.ToString() + " " + response.ToString() + Environment.NewLine + "Body: " + response.Content.ReadAsStringAsync().Result);
                 var statusCode = response.StatusCode;
                 response.EnsureSuccessStatusCode();
 
