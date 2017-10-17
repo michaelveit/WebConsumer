@@ -107,5 +107,22 @@ namespace WebConsumer.IntegrationTests
 
         }
 
+
+        [Test]
+        [Ignore("Do not have real credentials")]
+        public void Actimizer()
+        {
+            var keys = new Dictionary<string, string>();
+            keys.Add("basic", System.Configuration.ConfigurationManager.AppSettings["actimizerauth"]);
+            var auth = new AuthorizationHeaderAuth(keys);
+
+            var url = "https://wsdk.actimizer.com/api/leads";
+            var jsonString = new Consumer().Consume(url, "LeadForExport.uniqueId", null, null, auth);
+            dynamic result = JsonConvert.DeserializeObject<ExpandoObject>(jsonString);
+            
+            Assert.IsNotNull(result, "result was null");
+            Assert.IsNotNull(result.LeadForExport.uniqueId, "LeadForExport was null.");
+        }
+
     }
 }
